@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-15">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/HES/Desktop/IR/lucene-9.8.0/lucene-9.8.0/modules/lucene-analysis-common-9.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Desktop/IR/lucene-9.8.0/lucene-9.8.0/modules/lucene-core-9.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Desktop/IR/lucene-9.8.0/lucene-9.8.0/modules/lucene-demo-9.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Desktop/IR/lucene-9.8.0/lucene-9.8.0/modules/lucene-queryparser-9.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Desktop/IR/lucene-9.8.0/lucene-9.8.0/modules/lucene-queries-9.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Downloads/jsoup-1.16.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Downloads/commons-io-2.15.0-bin/commons-io-2.15.0/commons-io-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/HES/Downloads/json-20231013.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
