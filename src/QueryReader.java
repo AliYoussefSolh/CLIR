@@ -33,6 +33,10 @@ public class QueryReader {
                 String human_russian="";
                 String human_persian="";
                 String query_expanded="";
+                String machine_chinese="";
+                String machine_russian="";
+                String machine_persian="";
+                
                 JSONArray topicsArray = jsonObject.getJSONArray("topics");
                 for (int i = 0; i < topicsArray.length(); i++) {
                     JSONObject topic = topicsArray.getJSONObject(i);
@@ -45,9 +49,16 @@ public class QueryReader {
                     	human_persian=topic.getString("topic_description");
                     }else if (lang.equals("rus") && src.equals("human translation")) {
                     	human_russian= topic.getString("topic_description");
-                    }else {
+                    }else if (lang.equals("fas") && src.equals("google translation")) {
+                    	machine_persian=topic.getString("topic_description");
+                    }else if (lang.equals("rus") && src.equals("google translation")) {
+                    	machine_russian=topic.getString("topic_description");
+                    }
+                    else {
                     	if (src.equals("human translation")) {
                     		human_chinese= topic.getString("topic_description");
+                    	}else {
+                    		machine_chinese=topic.getString("topic_description");
                     	}
                     	
                     }
@@ -55,10 +66,13 @@ public class QueryReader {
                 Map<String, String> map=new HashMap<String, String>();
                 map.put("id", queryId);
                 map.put("text", query);
-                map.put("text_expanded", query_expanded);
+                map.put("query_expanded", query_expanded);
                 map.put("human_persian", human_persian);
                 map.put("human_chinese", human_chinese);
                 map.put("human_russian", human_russian);
+                map.put("machine_chinese", machine_chinese);
+                map.put("machine_russian", machine_russian);
+                map.put("machine_persian", machine_persian);
                 queries.add(map);
             }
         } catch (IOException e) {

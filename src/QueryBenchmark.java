@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class QueryBenchmark {
-	
 	public static Map<String,Float> FindTopTenDocs(String q, String indexPath, String languageCode){
 		Map<String,Float> docs = new HashMap<String, Float>();
 		StandardAnalyzer analyzer = new StandardAnalyzer();
@@ -37,7 +36,7 @@ public class QueryBenchmark {
             searcher = new IndexSearcher(reader);
             searcher.setSimilarity(new BM25Similarity());
             String queryText=Translator.translateQuery(q,languageCode);
-            System.out.println("tr "+queryText);
+            //System.out.println("tr "+queryText);
             org.apache.lucene.search.Query query = parser.parse(queryText);
             TopDocs topDocs = searcher.search(query, 10);
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
@@ -106,21 +105,28 @@ public class QueryBenchmark {
         //System.out.println(FindTopTenAcrossAllCorpuses(queryText));
     	List<Map<String,String>> queries= QueryReader.readQueriesFromJsonLines("C:\\Users\\HES\\Downloads\\topics.0720.utf8.jsonl.txt");
     	String queryText=queries.get(0).get("text");
-    	System.out.println(queries.get(0).get("id"));
+		String queryTextExpanded = queries.get(0).get("query_expanded");
+		//System.out.println(queryTextExpanded);
+    	//System.out.println(queries.get(0).get("id"));
     	//System.out.println(queryText);
     	List<String> l=new ArrayList<String>();
         for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryText).entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
             l.add(entry.getKey());
         }
+        for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryTextExpanded).entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            //l.add(entry.getKey());
+        }
        // System.out.println(l);
-        List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,queries.get(0).get("id"));
-        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateNDCG(TrustScores, 10));
-        List<List<Integer>> allScores= new ArrayList<List<Integer>>();
-        allScores.add(TrustScores);
-        System.out.println("mrr@10 is "+ MRRCalculator.calculateMRR(allScores));
-        System.out.println("map@10 is "+ MAPCalculator.calculateMAP(allScores));
-        
+//        List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,queries.get(0).get("id"));
+//        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateNDCG(TrustScores, 10));
+//        List<List<Integer>> allScores= new ArrayList<List<Integer>>();
+//        allScores.add(TrustScores);
+//        System.out.println("mrr@10 is "+ MRRCalculator.calculateMRR(allScores));
+//        System.out.println("map@10 is "+ MAPCalculator.calculateMAP(allScores));
+//        CosineSimilarityCalculator.GetSimilartPercentageForQuery(queries.get(0));
+//        
             
             
     }
