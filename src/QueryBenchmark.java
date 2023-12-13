@@ -43,7 +43,7 @@ public class QueryBenchmark {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 int docId = scoreDoc.doc;
                 Document document = searcher.doc(docId);
-                String t= docId +" - "+document.get("title");
+                String t= document.get("id");
                 float score = scoreDoc.score;
                 docs.put(t,score);
 //                System.out.println(docId);
@@ -100,13 +100,27 @@ public class QueryBenchmark {
 //        Similarity bm25Similarity = new BM25Similarity();
 //        Similarity dirichletSimilarity = new LMDirichletSimilarity();
         // Initialize retrieval models
-        Scanner scan=new Scanner(System.in);
-        System.out.print("Enter the query:");
-        String queryText = scan.nextLine();
+//        Scanner scan=new Scanner(System.in);
+//        System.out.print("Enter the query:");
+        //String queryText = scan.nextLine();
         //System.out.println(FindTopTenAcrossAllCorpuses(queryText));
+    	List<Map<String,String>> queries= QueryReader.readQueriesFromJsonLines("C:\\Users\\HES\\Downloads\\topics.0720.utf8.jsonl.txt");
+    	String queryText=queries.get(0).get("text");
+    	System.out.println(queries.get(0).get("id"));
+    	//System.out.println(queryText);
+    	List<String> l=new ArrayList<String>();
         for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryText).entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
+            l.add(entry.getKey());
         }
+       // System.out.println(l);
+        List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,queries.get(0).get("id"));
+        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateNDCG(TrustScores, 10));
+        List<List<Integer>> allScores= new ArrayList<List<Integer>>();
+        allScores.add(TrustScores);
+        System.out.println("mrr@10 is "+ MRRCalculator.calculateMRR(allScores));
+        System.out.println("map@10 is "+ MAPCalculator.calculateMAP(allScores));
+        
             
             
     }

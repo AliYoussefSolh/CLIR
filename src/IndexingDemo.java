@@ -54,7 +54,7 @@ public class IndexingDemo {
                     String TextContentFromatted=textProcessor.processText(textContent, target_language);
                     Document doc = new Document();
                     doc.add(new TextField("content", TextContentFromatted, Field.Store.NO));
-                    doc.add(new StringField("title",JSONLReader.readJsonAttribute(file,"title") , Field.Store.YES));
+                    doc.add(new StringField("id",JSONLReader.readJsonAttribute(file,"id") , Field.Store.YES));
                     writer.addDocument(doc);
                 }
             }
