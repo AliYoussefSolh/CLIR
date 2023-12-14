@@ -64,6 +64,15 @@ public class QueryBenchmark {
         }
 		return docs;
 	}
+	public static int GetNewDocs(List<String> l , List<String> l2) {
+		int res=0;
+		for (String s :l2) {
+			if (!l.contains(s)) {
+				res++;
+			}
+		}
+		return res;
+	}
 	public static LinkedHashMap<String, Float> FindTopTenAcrossAllCorpuses(String query){
 		String russian_index= "C:\\Users\\HES\\Desktop\\russian_index";
 		String persian_index= "C:\\Users\\HES\\Desktop\\persian_index";
@@ -93,39 +102,67 @@ public class QueryBenchmark {
 		
 	}
     public static void main(String[] args) {
-        
-//     // Specify the retrieval models
-//        Similarity vsmSimilarity = new ClassicSimilarity(); // Vector Space Model
-//        Similarity bm25Similarity = new BM25Similarity();
-//        Similarity dirichletSimilarity = new LMDirichletSimilarity();
-        // Initialize retrieval models
-//        Scanner scan=new Scanner(System.in);
-//        System.out.print("Enter the query:");
-        //String queryText = scan.nextLine();
-        //System.out.println(FindTopTenAcrossAllCorpuses(queryText));
-    	List<Map<String,String>> queries= QueryReader.readQueriesFromJsonLines("C:\\Users\\HES\\Downloads\\topics.0720.utf8.jsonl.txt");
-    	String queryText=queries.get(0).get("text");
-		String queryTextExpanded = queries.get(0).get("query_expanded");
+    	List<Map<String,String>> Allqueries= QueryReader.readQueriesFromJsonLines("C:\\Users\\HES\\Downloads\\topics.0720.utf8.jsonl.txt");
+    	List<Map<String,String>> queries= new ArrayList<Map<String,String>>();
+    	queries.add(Allqueries.get(0));
+    	List<List<Integer>> allScores= new ArrayList<List<Integer>>();
+    	int index=1;
+    	List<String> l=new ArrayList<String>();
+    	for (Map<String,String> query :queries) {
+    		String queryText=query.get("text");
+    		System.out.println("....................Query Number "+ index+"..............");
+    		System.out.println("Query Text: "+queryText);
+    		CosineSimilarityCalculator.GetSimilartPercentageForQuery(query);
+    		
+    		System.out.println(".....................Top 10 Documents with their scores...........");
+    		System.out.println("\t\tDocument ID\t\t Score");
+            for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryText).entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+                l.add(entry.getKey());
+            }
+            List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,query.get("id"));
+            allScores.add(TrustScores);
+    		
+    	}
+    	System.out.println("....................Evaluation........................");
+        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateAverageNDCGAt10(allScores));
+        System.out.println("RR@10 is "+ MRRCalculator.calculateMRR(allScores));
+        System.out.println("AP@10 is "+ MAPCalculator.calculateMAP(allScores));
+        List<String> l2=new ArrayList<String>();
+    	List<List<Integer>> allScoresExpanded= new ArrayList<List<Integer>>();
+    	for (Map<String,String> query :queries) {
+    		String queryText=query.get("query_expanded");
+    		
+    		System.out.println(".................Top Ten documents After Expansion.................");
+    		System.out.println("\t\tDocument ID\t\t Score");
+            for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryText).entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+                l2.add(entry.getKey());
+            }
+            List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,query.get("id"));
+            allScoresExpanded.add(TrustScores);
+    		
+    	}
+    	System.out.println("....................Query Expansion Evaluation........................");
+    	System.out.println("The new Documents retrieved after query expansion is "+GetNewDocs(l,l2));
+        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateAverageNDCGAt10(allScoresExpanded));
+        System.out.println("mrr@10 is "+ MRRCalculator.calculateMRR(allScoresExpanded));
+        System.out.println("map@10 is "+ MAPCalculator.calculateMAP(allScoresExpanded));
+    	
+    	
+//      
+    	
+		
 		//System.out.println(queryTextExpanded);
     	//System.out.println(queries.get(0).get("id"));
     	//System.out.println(queryText);
-    	List<String> l=new ArrayList<String>();
-        for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryText).entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-            l.add(entry.getKey());
-        }
-        for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryTextExpanded).entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-            //l.add(entry.getKey());
-        }
+    	
+//        for (Map.Entry<String, Float> entry : FindTopTenAcrossAllCorpuses(queryTextExpanded).entrySet()) {
+//            System.out.println(entry.getKey() + ": " + entry.getValue());
+//            //l.add(entry.getKey());
+//        }
        // System.out.println(l);
-//        List<Integer> TrustScores = RelevenceScroreReader.getTrustValuesForQuery(l,queries.get(0).get("id"));
-//        System.out.println("ndcg@10 is "+ NDCGCalculator.calculateNDCG(TrustScores, 10));
-//        List<List<Integer>> allScores= new ArrayList<List<Integer>>();
-//        allScores.add(TrustScores);
-//        System.out.println("mrr@10 is "+ MRRCalculator.calculateMRR(allScores));
-//        System.out.println("map@10 is "+ MAPCalculator.calculateMAP(allScores));
-//        CosineSimilarityCalculator.GetSimilartPercentageForQuery(queries.get(0));
+//        
 //        
             
             

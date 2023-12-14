@@ -14,6 +14,15 @@ public class NDCGCalculator {
         return dcg / idcg;
     }
 
+    public static double calculateAverageNDCGAt10(List<List<Integer>> trueRelevance) {
+        int len = trueRelevance.size();
+        double sum = 0;
+        for (int i = 0; i < len; i++) {
+            sum += calculateNDCG(trueRelevance.get(i), 10);
+        }
+        return sum / len;
+    }
+
     // Function to calculate Discounted Cumulative Gain (DCG)
     public static double calculateDCG(List<Integer> trueRelevance, int k) {
         double dcg = 0.0;
@@ -28,7 +37,7 @@ public class NDCGCalculator {
     public static double calculateIdealDCG(List<Integer> trueRelevance, int k) {
         List<Integer> sortedRelevance = new ArrayList<>(trueRelevance);
         sortedRelevance.sort(Comparator.reverseOrder()); // Sort in descending order
-        System.out.println(sortedRelevance);
+        // System.out.println(sortedRelevance);
         return calculateDCG(sortedRelevance, k);
     }
 
